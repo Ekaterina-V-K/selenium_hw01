@@ -4,7 +4,7 @@ import time
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-
+from selenium.common.exceptions import NoSuchElementException
 
 loc_lvl0="//ul[@id='box-apps-menu']/li[@id='app-']"
 loc_lvl1="//ul[@class='docs']//span[@class='name']"
@@ -21,6 +21,14 @@ def driver(request):
     request.addfinalizer(wd.quit)
     return wd
 
+def check_exists_by_loc(drv,loc):
+    # try:
+    #     drv.find_elements(By.XPATH, loc)
+    # except NoSuchElementException:
+    #     return False
+    # return True
+    return bool(drv.find_elements(By.XPATH, loc))
+
 def test_example(driver):
     driver.get(link)
     driver.find_element("name", "username").send_keys("admin")
@@ -28,15 +36,18 @@ def test_example(driver):
     driver.find_element("name", "login").click()
     elements=driver.find_elements(By.XPATH, loc_lvl0)
     elements_count =len(elements)
-    print(elements[1])
+    assert check_exists_by_loc(driver,loc_h1), "Не найден заголовок H1 в корне сайта"
+
     for indx in range(elements_count):
        elements = driver.find_elements(By.XPATH, loc_lvl0)
        el=elements[indx]
        print(el.text)
        el.click()
-       time.sleep(1)
-       el_h1 = driver.find_element(By.XPATH, loc_h1)  # ищем элемент h1
-       print('H1:', el_h1.text)
+       time.sleep(0)
+       #el_h1 = driver.find_element(By.XPATH, loc_h1)  # ищем элемент h1
+       el_h1 = driver.find_elements(By.XPATH, loc_h1)  # ищем элемент h1
+       assert len(el_h1), "Не найден заголовок H1"
+       print('H1:', el_h1[0].text)
        #Обход вложенных элементов
        elements_1 = driver.find_elements(By.XPATH, loc_lvl1)
        elements_1_count = len(elements_1)
@@ -45,9 +56,10 @@ def test_example(driver):
            el1 = elements_1[indx1]
            print('>',el1.text)
            el1.click()
-           el_h1 = driver.find_element(By.XPATH, loc_h1)  # ищем элемент h1
-           print('>H1:', el_h1.text)
-           time.sleep(1)
+           el_h1 = driver.find_elements(By.XPATH, loc_h1)  # ищем элемент h1
+           assert len(el_h1), "Не найден заголовок H1"
+           print('>H1:', el_h1[0].text)
+           time.sleep(0)
 
 
        #print(el_h1)
