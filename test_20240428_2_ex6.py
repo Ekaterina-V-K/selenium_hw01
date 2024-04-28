@@ -48,6 +48,8 @@ def test_example(driver):
            el_h1 = driver.find_element(By.XPATH, loc_h1)  # ищем элемент h1
            print('>H1:', el_h1.text)
            time.sleep(1)
+
+
        #print(el_h1)
        #assert  el_h1!=None,   'Элемент H1 на вкладке не найден'
        #перебираем внутренние элементы
