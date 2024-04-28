@@ -33,13 +33,22 @@ def test_example(driver):
        elements = driver.find_elements(By.XPATH, loc_lvl0)
        el=elements[indx]
        print(el.text)
-       print('H1:', el.text)
        el.click()
-       el_h1 = driver.find_element(By.XPATH, loc_h1) #ищем элемент h1
+       time.sleep(1)
+       el_h1 = driver.find_element(By.XPATH, loc_h1)  # ищем элемент h1
+       print('H1:', el_h1.text)
+       #Обход вложенных элементов
+       elements_1 = driver.find_elements(By.XPATH, loc_lvl1)
+       elements_1_count = len(elements_1)
+       for indx1 in range(elements_1_count):
+           elements_1 = driver.find_elements(By.XPATH, loc_lvl1)
+           el1 = elements_1[indx1]
+           print('>',el1.text)
+           el1.click()
+           el_h1 = driver.find_element(By.XPATH, loc_h1)  # ищем элемент h1
+           print('>H1:', el_h1.text)
+           time.sleep(1)
        #print(el_h1)
        #assert  el_h1!=None,   'Элемент H1 на вкладке не найден'
        #перебираем внутренние элементы
-
-
-
        #time.sleep(0)
