@@ -22,11 +22,6 @@ def driver(request):
     return wd
 
 def check_exists_by_loc(drv,loc):
-    # try:
-    #     drv.find_elements(By.XPATH, loc)
-    # except NoSuchElementException:
-    #     return False
-    # return True
     return bool(drv.find_elements(By.XPATH, loc))
 
 def test_example(driver):
@@ -36,18 +31,15 @@ def test_example(driver):
     driver.find_element("name", "login").click()
     elements=driver.find_elements(By.XPATH, loc_lvl0)
     elements_count =len(elements)
-    assert check_exists_by_loc(driver,loc_h1), "Не найден заголовок H1 в корне сайта"
-
     for indx in range(elements_count):
        elements = driver.find_elements(By.XPATH, loc_lvl0)
        el=elements[indx]
        print(el.text)
        el.click()
        time.sleep(0)
-       #el_h1 = driver.find_element(By.XPATH, loc_h1)  # ищем элемент h1
-       el_h1 = driver.find_elements(By.XPATH, loc_h1)  # ищем элемент h1
-       assert len(el_h1), "Не найден заголовок H1"
-       print('H1:', el_h1[0].text)
+       el_h1 = driver.find_element(By.XPATH, loc_h1)  # ищем элемент h1
+       assert check_exists_by_loc(driver,loc_h1), f"Не найден заголовок H1 в разделе {el.text}"
+       print('H1:', el_h1.text)
        #Обход вложенных элементов
        elements_1 = driver.find_elements(By.XPATH, loc_lvl1)
        elements_1_count = len(elements_1)
@@ -56,13 +48,6 @@ def test_example(driver):
            el1 = elements_1[indx1]
            print('>',el1.text)
            el1.click()
-           el_h1 = driver.find_elements(By.XPATH, loc_h1)  # ищем элемент h1
-           assert len(el_h1), "Не найден заголовок H1"
-           print('>H1:', el_h1[0].text)
-           time.sleep(0)
-
-
-       #print(el_h1)
-       #assert  el_h1!=None,   'Элемент H1 на вкладке не найден'
-       #перебираем внутренние элементы
-       #time.sleep(0)
+           el_h1 = driver.find_element(By.XPATH, loc_h1)  # ищем элемент h1
+           assert check_exists_by_loc(driver,loc_h1), f"Не найден заголовок H1 в разделе {el.text}>{el1.text}"
+           print('> H1:', el_h1.text)
