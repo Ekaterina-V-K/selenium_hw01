@@ -11,12 +11,9 @@ loc_lvl1="//ul[@class='docs']//span[@class='name']"
 loc_h1="//h1"
 link="http://localhost/litecart/admin/"
 
-
 @pytest.fixture
 def driver(request):
     wd = webdriver.Chrome()
-    #wd = webdriver.Firefox()
-    #wd = webdriver.Edge()
     print(wd.capabilities)
     request.addfinalizer(wd.quit)
     return wd
