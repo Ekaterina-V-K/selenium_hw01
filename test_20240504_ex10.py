@@ -2,7 +2,7 @@ import pytest
 from selenium import webdriver
 import time
 from selenium.webdriver.common.by import By
-
+import ast
 
 link="http://localhost/litecart/en/"
 utochka="//div[@id='box-campaigns']/div[@class='content']/ul[@class='listing-wrapper products']/li"
@@ -26,15 +26,27 @@ def test_ex10(driver):
     main_price_utochka=main_utka.find_element(By.XPATH, 'a/div[@class ="price-wrapper"]/s[@class="regular-price"]').get_attribute("textContent")
     main_sale_utochka=main_utka.find_element(By.XPATH, 'a/div[@class="price-wrapper"]/strong[@class="campaign-price"]').get_attribute("textContent")
     #в)проверим что обычная цена зачеркнутая и серая (R=G=B)
-    # main_price_X=
-    # main_price_gray=
-
+    main_price_X=(main_utka.find_element(By.XPATH, 'a/div[@class ="price-wrapper"]/s[@class="regular-price"]').value_of_css_property('text-decoration-line')=='line-through')
+    if not main_price_X:
+        print("Шрифт основной цены на главной странице не перечеркнутый")
+    main_price_color=main_utka.find_element(By.XPATH, 'a/div[@class ="price-wrapper"]/s[@class="regular-price"]').value_of_css_property('color')
+    r, g, b, alpha = ast.literal_eval(main_price_color.strip("rgba"))
+    if not (r==g==b):
+        print("Цвет основной цены на главной странице не серый")
     #г)проверим что акционная цена жирная и красная (G=0 AND B=0)
-    #д)акционная цена крупнее чем обычная (сравнить размер шрифта)
 
+    main_sale_is_bold=main_utka.find_element(By.XPATH, 'a/div[@class ="price-wrapper"]/strong[@class="campaign-price"]').value_of_css_property('font-weight')>400
+    if not main_sale_is_bold:
+        print("Шрифта акционной цены на главной странице не жирный")
+
+    main_sale_color=main_utka.find_element(By.XPATH, 'a/div[@class ="price-wrapper"]/strong[@class="campaign-price"]').value_of_css_property('color')
+    r, g, b, alpha = ast.literal_eval(main_price_color.strip("rgba"))
+    if G!=0 and B!=0:
+        print("Цвет шрифта акционной цены на главной странице не красный")
+
+    #д)акционная цена крупнее чем обычная (сравнить размер шрифта)
     main_utka.find_element(By.XPATH, 'a').click()
     time.sleep(3)
-
 
     # ___на странице товара:___
     # а)получим название товара
