@@ -14,6 +14,7 @@ def driver(request):
     request.addfinalizer(wd.quit)
     return wd
 
+
 def test_example(driver):
     driver.get(link)
     driver.find_element("name", "username").send_keys("admin")
