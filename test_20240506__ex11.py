@@ -60,8 +60,9 @@ def test_ex11(driver):
     actions.click(dropdown).perform()
     # Выбираем значение из списка
     value = driver.find_element(By.CSS_SELECTOR, 'li[id$="-US"]')
-    actions.move_to_element(value).click(value).perform()
-    # -----
+    # actions.move_to_element(value).perform()
+    actions.click(value).perform()
+
 
     driver.find_element(By.XPATH,'//input[@type="email" and @name="email"]').send_keys(user_email)
     driver.find_element(By.XPATH,'//input[@type="tel" and @name="phone"]').send_keys("+12345678999")
