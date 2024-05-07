@@ -4,12 +4,22 @@ import time
 import datetime
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.common.action_chains import ActionChains
 
 link="http://localhost/litecart/en/create_account"
 
-@pytest.fixture
+# @pytest.fixture(params=['firefox','chrome','edge'])
+@pytest.fixture(params=['firefox'])
 def driver(request):
-    wd = webdriver.Chrome()
+    if request.param.lower() == 'chrome':
+        wd = webdriver.Chrome()
+    elif request.param.lower() == 'firefox':
+        wd = webdriver.Firefox()
+    elif request.param.lower() == 'edge':
+        wd = webdriver.Edge()
+    else:
+        print("Неподдерживаемый браузер!")
+        return
     print(wd.capabilities)
     request.addfinalizer(wd.quit)
     return wd
@@ -35,11 +45,23 @@ def test_ex11(driver):
     driver.find_element(By.XPATH,'//input[@type="text" and @name="postcode"]').send_keys("12345")
     driver.find_element(By.XPATH,'//input[@type="text" and @name="city"]').send_keys("LA")
     # country_el= driver.find_element(By.XPATH,'//select[@name="country_code"]/option[@value="US"]')
-    country_el= driver.find_element(By.XPATH,'//select[@name="country_code"]')
-    # Создаем объект класса Select, который представляет выпадающий список
-    select = Select(country_el)
-    # Устанавливаем значение в выпадающем списке по тексту опции
-    select.select_by_visible_text("United States")
+    # country_el= driver.find_element(By.XPATH,'//select[@name="country_code"]')
+    # # Создаем объект класса Select, который представляет выпадающий список
+    # select = Select(country_el)
+    # # Устанавливаем значение в выпадающем списке по тексту опции
+    # select.select_by_visible_text("United States")
+
+    # -----
+    # Находим элемент выпадающего списка по его ID
+    dropdown = driver.find_element(By.XPATH,'//span[@class="select2-selection select2-selection--single"]')
+    # Создаем объект ActionChains
+    actions = ActionChains(driver)
+    # Вызываем метод click на выпадающем списке
+    actions.click(dropdown).perform()
+    # Выбираем значение из списка
+    value = driver.find_element(By.CSS_SELECTOR, 'li[id$="-US"]')
+    actions.move_to_element(value).click(value).perform()
+    # -----
 
     driver.find_element(By.XPATH,'//input[@type="email" and @name="email"]').send_keys(user_email)
     driver.find_element(By.XPATH,'//input[@type="tel" and @name="phone"]').send_keys("+12345678999")
