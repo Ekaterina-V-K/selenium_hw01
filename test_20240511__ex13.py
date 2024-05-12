@@ -25,7 +25,6 @@ def driver(request):
     request.addfinalizer(wd.quit)
     return wd
 
-
 def add_prods_to_cart(drv):
     wait = WebDriverWait(drv, 5)
     for _ in range(3):
