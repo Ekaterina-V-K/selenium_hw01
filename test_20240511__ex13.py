@@ -11,7 +11,6 @@ link = "http://localhost/litecart/en/"
 
 # @pytest.fixture(params=['chrome','edge','firefox'])
 @pytest.fixture(params=['chrome'])
-# @pytest.fixture(params=['firefox'])
 def driver(request):
     if request.param.lower() == 'chrome':
         wd = webdriver.Chrome()
@@ -28,8 +27,8 @@ def driver(request):
 
 
 def add_prods_to_cart(drv):
-    wait = WebDriverWait(drv, 5, poll_frequency=1)
-    for _ in range(1):
+    wait = WebDriverWait(drv, 5)
+    for _ in range(3):
         # 2) открыть первый товар из списка
         loc_first_duck=(By.XPATH,'//ul[@class="listing-wrapper products"]/li/a[@class="link"]')
         # loc_first_duck = (By.XPATH, '//a[@title="Yellow Duck"]')  # проверка на желтой утке с размером
@@ -54,27 +53,23 @@ def add_prods_to_cart(drv):
         # 4) вернуться на главную страницу, повторить предыдущие шаги ещё два раза, чтобы в общей сложности в корзине было 3 единицы товара
         drv.back()
 
-
-
 def test_ex13(driver):
     driver.implicitly_wait(10)
-    wait = WebDriverWait(driver, 50, poll_frequency=1)
+    wait = WebDriverWait(driver, 30)
     # 1) открыть главную страницу
     driver.get(link)
     # 2-4)
     add_prods_to_cart(driver)
     # 5) открыть корзину (в правом верхнем углу кликнуть по ссылке Checkout)
     loc_cart=(By.XPATH,'//a[@href="http://localhost/litecart/en/checkout" and @class="link"]')
-    # wait.until(EC.element_to_be_clickable(loc_cart))
-    element = wait.until(EC.presence_of_element_located(loc_cart), message="Ссылка 'Cart' не найдена")
+    element = wait.until(EC.presence_of_element_located(loc_cart))
     element.click()
     # 6) удалить все товары из корзины один за другим, после каждого удаления подождать, пока внизу обновится таблица
-    # driver.find_element(By.XPATH, '//button[@value="Update"]').click()
     loc_remove_button=(By.XPATH, '//button[@value="Remove"]')
+    remove_buttons=driver.find_elements(*loc_remove_button)
+    count_remove_buttons=len(remove_buttons)
+    for i in range( count_remove_buttons):
+        button=wait.until(EC.visibility_of_element_located(loc_remove_button))
+        button.click()
 
-    wait.until(EC.element_to_be_clickable(loc_remove_button))
-    driver.find_element(*loc_remove_button).click()
-
-    # wait.until(EC.invisibility_of_element_located(DELETE_BUTTON))  # Ждем исчезновения элемента
-
-    time.sleep(4)
+    time.sleep(5)
