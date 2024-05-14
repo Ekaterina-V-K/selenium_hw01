@@ -9,8 +9,8 @@ from selenium.common.exceptions import NoSuchElementException
 
 link = "http://localhost/litecart/en/"
 
-# @pytest.fixture(params=['chrome','edge','firefox'])
-@pytest.fixture(params=['chrome'])
+@pytest.fixture(params=['chrome','edge','firefox'])
+# @pytest.fixture(params=['chrome'])
 def driver(request):
     if request.param.lower() == 'chrome':
         wd = webdriver.Chrome()
@@ -26,7 +26,7 @@ def driver(request):
     return wd
 
 def add_prods_to_cart(drv):
-    wait = WebDriverWait(drv, 5)
+    wait = WebDriverWait(drv, 10)
     for _ in range(3):
         # 2) открыть первый товар из списка
         loc_first_duck=(By.XPATH,'//ul[@class="listing-wrapper products"]/li/a[@class="link"]')
@@ -53,8 +53,8 @@ def add_prods_to_cart(drv):
         drv.back()
 
 def test_ex13(driver):
-    driver.implicitly_wait(10)
-    wait = WebDriverWait(driver, 30)
+    driver.implicitly_wait(0)
+    wait = WebDriverWait(driver, 10)
     # 1) открыть главную страницу
     driver.get(link)
     # 2-4)
@@ -70,5 +70,6 @@ def test_ex13(driver):
     for i in range( count_remove_buttons):
         button=wait.until(EC.visibility_of_element_located(loc_remove_button))
         button.click()
+        wait.until(EC.staleness_of(button)) #ждем пока кнопка исчезнет
 
-    time.sleep(5)
+    time.sleep(2)
