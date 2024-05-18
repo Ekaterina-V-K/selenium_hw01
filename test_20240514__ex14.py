@@ -43,7 +43,10 @@ def test_example(driver):
         wait.until(EC.number_of_windows_to_be(2))
         list_of_tabs = driver.window_handles
         # -переключиться в новое окно
-        driver.switch_to.window(list_of_tabs[1])
+        for window_handle in driver.window_handles:
+            if window_handle != main_tab:
+                driver.switch_to.window(window_handle)
+                break
         # -закрыть новое окно
         driver.close()
         # -переключиться на основное окно (редактирование страны)
