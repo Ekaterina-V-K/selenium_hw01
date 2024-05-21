@@ -10,7 +10,5 @@ def driver(request):
 
 def test_example(driver):
     application = Application(driver)
-    application.addProductsToCart(driver)
-    application.removeProduct(driver)
-
-
+    application.addProductsToCart(3)
+    application.removeProduct()
